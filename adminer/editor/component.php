@@ -16,8 +16,13 @@ if ($this->StartResultCache($arParams["CACHE_TIME"], $USER->GetGroups()))
 			$codes[] = "PROPERTY_" . $prop;
 		}
 	}
-	$arrFilter = array_merge($codes, ["IBLOCK_ISD" => $iblockId, "IBLOCK_TYPE" => $iblockType]);
-	$res = CIBlockElement::GetList([], $arrFilter, false, [], $codes)->GetNext();
+	if(!empty($codes)) {
+		$arrFilter = array_merge($codes, ["IBLOCK_ID" => $iblockId, "IBLOCK_TYPE" => $iblockType]);
+		$res = CIBlockElement::GetList([], $arrFilter, false, [], $codes)->GetNext();
+	}else{
+		$arrFilter = array_merge($codes, ["IBLOCK_ID" => $iblockId, "IBLOCK_TYPE" => $iblockType]);
+		$res = CIBlockElement::GetList([], $arrFilter, false, [], $codes)->GetNextElement()->GetProperties();
+	}
 	$arResult["PROPS"] = $res;
     $this->IncludeComponentTemplate();
 }
